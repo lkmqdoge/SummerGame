@@ -19,6 +19,8 @@ public class MyContentCollector : ContentBuilder
 
         // override .txt files to be copied
         contentCollection.IncludeCopy<RegexRule>(".txt");
+        contentCollection.Include<RegexRule>(".ttf");
+        contentCollection.Include<RegexRule>(".png");
 
         // exclude bin / obj paths
         contentCollection.Exclude<RegexRule>("bin/");

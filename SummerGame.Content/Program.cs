@@ -14,9 +14,18 @@ using SummerGame.Content;
 var contentCollectionArgs = new ContentBuilderParams()
 {
     Mode = ContentBuilderMode.Builder,
-    WorkingDirectory = $"{AppContext.BaseDirectory}../../../", // path to where your content folder can be located
-    SourceDirectory = "Assets", // Not actually needed as this is the default, but added for reference
+    WorkingDirectory = $"{AppContext.BaseDirectory}../../../",
+    SourceDirectory = "Assets",
     Platform = TargetPlatform.DesktopGL
 };
+
 var contentCollector = new MyContentCollector();
-contentCollector.Run(contentCollectionArgs); // alternatively just pass args to read from command line
+
+if (args?.Length > 0)
+{
+    contentCollector.Run(args);
+}
+else
+{
+    contentCollector.Run(contentCollectionArgs);
+}
