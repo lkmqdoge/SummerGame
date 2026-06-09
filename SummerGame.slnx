@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SummerGame.Content/SummerGame.Content.csproj" />
+  <Project Path="SummerGame.Core/SummerGame.Core.csproj" />
+  <Project Path="SummerGame.Desktop/SummerGame.Desktop.csproj" />
+</Solution>
