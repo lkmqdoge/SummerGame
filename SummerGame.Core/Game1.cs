@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SummerGame.Core.Simulation;
 
 namespace SummerGame.Core;
 
@@ -10,16 +11,29 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
+    private Grid _grid;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
+
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
+        _grid = new (100, 100);
+
+        for (int x = 0; x < _grid.Tiles.GetLength(0); x++)
+        {
+            for (int y = 0; y < _grid.Tiles.GetLength(1); y++)
+            {
+                _grid.Tiles[x, y] = new Tile{
+                    BlockId = "debug-purple",
+                };
+            }
+        }
 
         base.Initialize();
     }
