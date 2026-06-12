@@ -1,0 +1,32 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin
+/intermediateDir:obj
+/platform:Windows
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Fonts/NotJamMonoClean13.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/NotJamMonoClean13.spritefont
+
+#begin Fonts/NotJamMonoClean13.ttf
+/importer:
+/processor:
+/build:Fonts/NotJamMonoClean13.ttf
+
+#begin Fonts/vonwaon.ttf
+/importer:
+/processor:
+/build:Fonts/vonwaon.ttf
+

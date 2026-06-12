@@ -2,7 +2,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SummerGame.Core.Graphics;
+using SummerGame.Core.Input;
 using SummerGame.Core.Simulation;
+using SummerGame.Core.UI;
 
 namespace SummerGame.Core;
 
@@ -10,12 +13,18 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-
     private Grid _grid;
+    private Camera2D _camera = new();
+
+    private TileGridDisplay _tileGridDisplay;
+
+    private KeyBoardInfo _keyboardInfo = new();
+
+    private DebugPanel _debugPanel;
 
     public Game1()
     {
-        _graphics = new GraphicsDeviceManager(this);
+        _graphics = new (this);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -23,7 +32,11 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+        _tileGridDisplay = new();
         _grid = new (100, 100);
+
+        _tileGridDisplay.Grid = _grid;
+        _tileGridDisplay.HardcodedShit = new();
 
         for (int x = 0; x < _grid.Tiles.GetLength(0); x++)
         {
@@ -39,17 +52,18 @@ public class Game1 : Game
     }
 
     private SpriteFont _font;
-    private Texture2D _texture;
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         // var text = Content.Load<string>("test.txt");
         // Console.WriteLine(text);
 
-        _font = Content.Load<SpriteFont>("Fonts/vonwaon");
-        _texture = Content.Load<Texture2D>("Textures/tiles");
+        // just like loading from file
+        _tileGridDisplay.HardcodedShit.Texture = Content.Load<Texture2D>("Textures/tiles");
+        _tileGridDisplay.HardcodedShit.AddRegion("debug-purple", 2*16, 0, 16, 16);
 
-        // TODO: use this.Content to load your game content here
+        _font = Content.Load<SpriteFont>("Fonts/NotJamMonoClean16");
+        _debugPanel = new (_font, _spriteBatch, this);
     }
 
     protected override void Update(GameTime gameTime)
@@ -57,7 +71,11 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        _keyboardInfo.Update();
+
+        // camera controls
+        if (_keyboardInfo.IsKeyDown(Keys.OemPlus))  _camera.Zoom += 0.05f;
+        if (_keyboardInfo.IsKeyDown(Keys.OemMinus)) _camera.Zoom -= 0.05f;
 
         base.Update(gameTime);
     }
@@ -65,12 +83,22 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
+
+        // world step
+        _spriteBatch.Begin(
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: _camera.GetViewMatrix(GraphicsDevice.Viewport)
+        );
+
+        _tileGridDisplay.Draw(_spriteBatch);
+
+        _spriteBatch.End();
+
+        // ui step
         _spriteBatch.Begin();
 
-        var fps = Math.Floor(1.0f / (float)gameTime.ElapsedGameTime.TotalSeconds);
-        _spriteBatch.Draw(_texture, Vector2.Zero, Color.White);
+        _debugPanel.Draw(gameTime);
 
-        _spriteBatch.DrawString(_font, $"FPS: {fps}", new (10, 10), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
