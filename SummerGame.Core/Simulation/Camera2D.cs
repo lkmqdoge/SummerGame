@@ -1,8 +1,7 @@
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SummerGame.Core.Graphics;
+namespace SummerGame.Core.Simulation;
 
 public class Camera2D
 {

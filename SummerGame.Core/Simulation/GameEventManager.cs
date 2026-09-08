@@ -1,6 +1,6 @@
 namespace SummerGame.Core.Simulation;
 
-public class Tile
+public class GameEventManager
 {
 }
 
