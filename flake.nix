@@ -33,7 +33,6 @@
             pkgs.gsettings-desktop-schemas
           ];
 
-          XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}";
           DOTNET_ROOT = "${pkgs.dotnet-sdk_9}/share/dotnet";
           FONTCONFIG_FILE="${fontsConf}";
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [

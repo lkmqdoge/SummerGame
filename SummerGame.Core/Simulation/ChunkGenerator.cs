@@ -1,6 +1,5 @@
 namespace SummerGame.Core.Simulation;
-
-public class World
+public class ChunkGenerator
 {
 }
 

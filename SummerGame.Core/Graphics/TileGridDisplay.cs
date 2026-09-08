@@ -1,13 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SummerGame.Core.Simulation;
+using SummerGame.Core.Simulation.Worlds;
 
 namespace SummerGame.Core.Graphics;
 public class TileGridDisplay
 {
     public TextureAtlas HardcodedShit { get; set; }
 
-    public Grid Grid { get; set; }
+    public TileGrid Grid { get; set; }
 
     public int TileSize { get; set; } = 16;
 
@@ -21,11 +21,11 @@ public class TileGridDisplay
         {
             for (int y = 0; y < Grid.Tiles.GetLength(1); y++)
             {
-                var id = Grid.Tiles[x, y].BlockId;
-                var reg = HardcodedShit.GetRegion(id);
-                var pos = new Vector2(x, y) * TileSize;
-
-                reg.Draw(spriteBatch, pos, Color.White);
+                // var id = Grid.Tiles[x, y].BlockId;
+                // var reg = HardcodedShit.GetRegion(id);
+                // var pos = new Vector2(x, y) * TileSize;
+                //
+                // reg.Draw(spriteBatch, pos, Color.White);
             }
         }
     }
