@@ -14,7 +14,7 @@ public class World
     public ChunkLoader ChunkLoader { get; set; }
 
 
-    public Dictionary<Vector2, Chunk> LoadedChunks { get; set; }
+    public Dictionary<Vector2, Chunk> LoadedChunks { get; set; } = [];
     public int SimulationRadius { get; set; } = 10;
     public Vector2 SimulationCenter { get; set; } = Vector2.Zero;
 

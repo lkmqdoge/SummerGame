@@ -1,7 +1,8 @@
 namespace SummerGame.Core.Simulation;
 
-public class Tile
+public struct Tile
 {
+    public const int TileSize = 16;
 }
 
 

@@ -1,6 +1,9 @@
 namespace SummerGame.Core.Simulation;
-public class Chunk
+
+public struct Chunk
 {
+    public const int ChunkSize = 16;
+    public Tile[,] Tiles { get; set; }
 }
 
 
