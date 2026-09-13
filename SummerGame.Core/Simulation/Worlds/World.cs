@@ -4,29 +4,30 @@ using Microsoft.Xna.Framework;
 
 namespace SummerGame.Core.Simulation.Worlds;
 
-public class World
+public class World(GameSimulation simulation)
 {
     // Constants
     public const int TileSize = 16;
-    public const int ChunkSize = 16;
+    public const int ChunkSize = 4;
 
     public ChunkGenerator ChunkGenerator { get; set; }
     public ChunkLoader ChunkLoader { get; set; }
 
-
+    public GameSimulation Simulation { get; set; } = simulation;
     public Dictionary<Vector2, Chunk> LoadedChunks { get; set; } = [];
     public int SimulationRadius { get; set; } = 10;
     public Vector2 SimulationCenter { get; set; } = Vector2.Zero;
 
-    public Camera2D Camera { get; set; }
+    public Camera2D Camera { get; set; } = new ();
 
     public void Update(double delta)
     {
         _ = delta;
         LoadedChunks = UpdateChunks(SimulationCenter, SimulationRadius, LoadedChunks);
+        UpdateCamera();
     }
 
-    public Dictionary<Vector2, Chunk> UpdateChunks(Vector2 center,
+    private Dictionary<Vector2, Chunk> UpdateChunks(Vector2 center,
         int radius, Dictionary<Vector2, Chunk> loadedChunks)
     {
         center = Vector2.Floor(center);
@@ -38,6 +39,8 @@ public class World
             {
                 // load chunk center + (+-(r-abs(i)), i)
                 var chunkPosition = center + new Vector2(r - Math.Abs(i), i);
+                Console.WriteLine($"{r}, {i}");
+
                 if (loadedChunks.TryGetValue(chunkPosition, out var chunk))
                 {
                     res.Add(chunkPosition, chunk);
@@ -58,6 +61,18 @@ public class World
         }
 
         return res;
+    }
+
+    private void UpdateCamera()
+    {
+        var dir = Simulation.ActionManager.GetVector("left", "right", "up", "down");
+        Camera.Postion += dir;
+
+        if (Simulation.ActionManager.IsActionPressed("zoom_in"))
+            Camera.Zoom += 0.03f;
+
+        if (Simulation.ActionManager.IsActionPressed("zoom_out"))
+            Camera.Zoom -= 0.03f;
     }
 }
 
