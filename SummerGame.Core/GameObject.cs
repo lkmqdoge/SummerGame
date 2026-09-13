@@ -8,6 +8,7 @@ public abstract class GameObject :
 {
     public bool IsDisposed { get; private set; }
 
+    public GameCore Game { get; init; }
     protected ContentManager Content;
 
     protected GameObject(GameCore game)
@@ -16,14 +17,12 @@ public abstract class GameObject :
         {
             RootDirectory = game.Content.RootDirectory
         };
+        Game = game;
     }
 
     ~GameObject() => Dispose(false);
-
     public virtual void Initialize() { }
-
     public virtual void LoadContent() { }
-
     public virtual void Update(double delta) { }
 
     public virtual void Exit()

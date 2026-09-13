@@ -2,9 +2,8 @@ namespace SummerGame.Core.Simulation.Worlds;
 
 public readonly struct Tile
 {
-    /// <summary>
-    /// Tile id like <grass> or <stone>
-    /// </summary>
+    public const int TileSize = 16;
+
     public readonly int Id;
 }
 
