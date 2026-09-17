@@ -41,7 +41,7 @@ public class GameGraphics : GameObject, IDrawable
             {
                 for (int y = 0; y < Tile.TileSize; y++)
                 {
-                    var tilePos = (pos * Chunk.ChunkSize * Tile.TileSize)
+                    var tilePos = (pos * World.ChunkSize * Tile.TileSize)
                         + (new Vector2(x, y) * Tile.TileSize);
 
                     _tileAtlas.GetRegion("TestTile").Draw(spriteBatch, tilePos, Color.White);

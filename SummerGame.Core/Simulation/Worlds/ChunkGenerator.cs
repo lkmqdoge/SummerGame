@@ -18,22 +18,22 @@ public class ChunkGenerator
 
     public Chunk Generate(int x, int y)
     {
-        var tiles = new Tile[Chunk.ChunkSize, Chunk.ChunkSize];
-
-        for (int i = 0; i < Chunk.ChunkSize; i++)
-        {
-            for (int j = 0; j < Chunk.ChunkSize; j++)
-            {
-                var noiseValue = Noise.GetNoise(
-                    (x * Chunk.ChunkSize) + i,
-                    (y * Chunk.ChunkSize) + i
-                );
-                // tiles[i, j] = new (){
-                //     BlockId = noiseValue
-                // };
-            }
-        }
-
+        // var tiles = new Tile[Chunk.ChunkSize, Chunk.ChunkSize];
+        //
+        // for (int i = 0; i < Chunk.ChunkSize; i++)
+        // {
+        //     for (int j = 0; j < Chunk.ChunkSize; j++)
+        //     {
+        //         var noiseValue = Noise.GetNoise(
+        //             (x * Chunk.ChunkSize) + i,
+        //             (y * Chunk.ChunkSize) + i
+        //         );
+        //         // tiles[i, j] = new (){
+        //         //     BlockId = noiseValue
+        //         // };
+        //     }
+        // }
+        //
         return new Chunk(){
         };
     }
