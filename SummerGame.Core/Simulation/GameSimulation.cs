@@ -7,8 +7,7 @@ namespace SummerGame.Core.Simulation;
 public class GameSimulation : GameObject
 {
     public World World { get; set; }
-
-    public ActionManager ActionManager = new ();
+    public ActionManager ActionManager { get; } = new();
 
     public GameSimulation(GameCore game) : base(game)
     {

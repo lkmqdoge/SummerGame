@@ -48,6 +48,15 @@ public class GameGraphics : GameObject, IDrawable
                 }
             }
         }
+        // draw cursor
+        var cursorPos = Simulation.ActionManager.MouseInfo.Position;
+        var cameraPos = Simulation.World.Camera.Postion;
+        var w = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        var h = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        var cursorCell = new Vector2(
+            
+        );
+
 
         spriteBatch.End();
     }
