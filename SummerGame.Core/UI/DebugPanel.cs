@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SummerGame.Core.UI;
 
-public class DebugPanel(SpriteFont font, SpriteBatch spriteBatch, Game game)
-    : IGameDrawable
+public class DebugPanel(GameCore game)
+    : GameObject(game)
 {
     public bool Visible { get; set; } = true;
     private readonly string _format = """

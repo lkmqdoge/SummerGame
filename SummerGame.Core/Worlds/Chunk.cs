@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace SummerGame.Core.Simulation.Worlds;
+namespace SummerGame.Core.Worlds;
 
 public readonly struct Chunk
 {

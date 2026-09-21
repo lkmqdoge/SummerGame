@@ -1,4 +1,4 @@
-namespace SummerGame.Core.Simulation.Worlds;
+namespace SummerGame.Core.Worlds;
 
 public class ChunkLoader
 {

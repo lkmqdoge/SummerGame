@@ -1,51 +1,64 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SummerGame.Core.Graphics;
+using SummerGame.Core.Input;
 using SummerGame.Core.Simulation;
+using SummerGame.Core.UI;
+using SummerGame.Core.Worlds;
 
 namespace SummerGame.Core;
 
 public class GameCore : Game
 {
-    public GameSimulation Simulation { get; set; }
-    public GameGraphics Graphics { get; set; }
+    public ActionManager ActionManager { get; } = new ();
 
     private GraphicsDeviceManager _graphicsDevice;
     private SpriteBatch _spriteBatch;
+
+    private World _world;
 
     public GameCore()
     {
         _graphicsDevice = new (this);
 
+        ActionManager.AddAction([
+            new InputAction("left", [Keys.Left]),
+            new InputAction("right", [Keys.Right]),
+            new InputAction("up", [Keys.Up]),
+            new InputAction("down", [Keys.Down]),
+
+            new InputAction("zoom_in",  [Keys.OemPlus]),
+            new InputAction("zoom_out", [Keys.OemMinus])
+        ]);
+
+
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        Simulation = new (this);
-        Graphics = new (this);
+        _world = new (this);
     }
 
     protected override void Initialize()
     {
-        Simulation.Initialize();
-        Graphics.Initialize();
-
+        _world.Initialize();
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _world.LoadContent();
 
-        Simulation.LoadContent();
-        Graphics.LoadContent();
+        base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
         var delta = gameTime.ElapsedGameTime.TotalSeconds;
 
-        Simulation.Update(delta);
-        Graphics.Update(delta);
+        ActionManager.Update();
+        _world.Update(delta);
 
         base.Update(gameTime);
     }
@@ -54,7 +67,7 @@ public class GameCore : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        Graphics.Draw(_spriteBatch);
+        _world.Draw(_spriteBatch);
 
         base.Draw(gameTime);
     }
