@@ -32,7 +32,7 @@ public class World(GameCore game)
     {
         _ = delta;
 
-        SimulationCenter = Camera.Postion;
+        SimulationCenter = Camera.Position;
         const int ChunkPixels = ChunkSize * TileSize;
         var chunkX = (int)MathF.Floor(SimulationCenter.X / ChunkPixels);
         var chunkY = (int)MathF.Floor(SimulationCenter.Y / ChunkPixels);
@@ -48,6 +48,8 @@ public class World(GameCore game)
             transformMatrix: Camera.GetViewMatrix(Game.GraphicsDevice.Viewport)
         );
 
+        var bound = Camera.GetBoundaries(Game.GraphicsDevice.Viewport);
+
         // draw chunks
         foreach (var (pos, chunk) in LoadedChunks)
         {
@@ -59,6 +61,9 @@ public class World(GameCore game)
                         (pos.X * ChunkSize * TileSize) + (x * TileSize),
                         (pos.Y * ChunkSize * TileSize) + (y * TileSize)
                     );
+
+                    if (!bound.Contains(tilePos))
+                        continue;
 
                     if (chunk.Tiles[x, y].Type != TileType.Air)
                         _tileAtlas.GetRegion("TestTile").Draw(spriteBatch, tilePos, Color.White);
@@ -103,7 +108,7 @@ public class World(GameCore game)
     private void UpdateCamera()
     {
         var dir = Game.ActionManager.GetVector("left", "right", "up", "down");
-        Camera.Postion += dir * (1.0f / Camera.Zoom) * 10;
+        Camera.Position += dir * (1.0f / Camera.Zoom) * 10;
 
         if (Game.ActionManager.IsActionPressed("zoom_in"))
             Camera.Zoom += 0.03f;
