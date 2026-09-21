@@ -15,6 +15,7 @@ public class GameCore : Game
 
     private GraphicsDeviceManager _graphicsDevice;
     private SpriteBatch _spriteBatch;
+    private DebugPanel _debugPanel;
 
     private World _world;
 
@@ -29,7 +30,8 @@ public class GameCore : Game
             new InputAction("down", [Keys.Down]),
 
             new InputAction("zoom_in",  [Keys.OemPlus]),
-            new InputAction("zoom_out", [Keys.OemMinus])
+            new InputAction("zoom_out", [Keys.OemMinus]),
+            new InputAction("restore_camera", [Keys.R])
         ]);
 
 
@@ -37,11 +39,13 @@ public class GameCore : Game
         IsMouseVisible = true;
 
         _world = new (this);
+        _debugPanel = new (this);
     }
 
     protected override void Initialize()
     {
         _world.Initialize();
+        _debugPanel.Initialize();
         base.Initialize();
     }
 
@@ -49,6 +53,7 @@ public class GameCore : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _world.LoadContent();
+        _debugPanel.LoadContent();
 
         base.LoadContent();
     }
@@ -59,6 +64,7 @@ public class GameCore : Game
 
         ActionManager.Update();
         _world.Update(delta);
+        _debugPanel.Update(delta);
 
         base.Update(gameTime);
     }
@@ -68,6 +74,7 @@ public class GameCore : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _world.Draw(_spriteBatch);
+        _debugPanel.Draw(_spriteBatch, gameTime);
 
         base.Draw(gameTime);
     }

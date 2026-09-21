@@ -10,14 +10,13 @@ namespace SummerGame.Core.Worlds;
 public class World(GameCore game)
     : GameObject(game)
 {
-    // Constants
     public const int TileSize = 16;
-    public const int ChunkSize = 8;
+    public const int ChunkSize = 4;
 
-    public ChunkGenerator ChunkGenerator { get; } = new ();
+    public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
     public ChunkLoader ChunkLoader { get; set; }
-    public Dictionary<Vector2, Chunk> LoadedChunks { get; set; } = [];
-    public int SimulationRadius { get; set; } = 12;
+    public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
+    public int SimulationRadius { get; set; } = 8;
     public Vector2 SimulationCenter { get; set; } = Vector2.Zero;
     public Camera2D Camera { get; set; } = new ();
 
@@ -33,21 +32,13 @@ public class World(GameCore game)
     {
         _ = delta;
 
-        var center = Vector2.Floor(SimulationCenter);
-
-        foreach (var chunkPos in GetChunkPositionsInRadius((int)center.X, (int)center.Y, SimulationRadius))
-        {
-            if (!LoadedChunks.ContainsKey(chunkPos))
-            {
-                LoadedChunks.Add(chunkPos, ChunkGenerator.Generate(
-                    (int)chunkPos.X,
-                    (int)chunkPos.Y
-                ));
-            }
-        }
-
-        UpdateCamera();
         SimulationCenter = Camera.Postion;
+        const int ChunkPixels = ChunkSize * TileSize;
+        var chunkX = (int)MathF.Floor(SimulationCenter.X / ChunkPixels);
+        var chunkY = (int)MathF.Floor(SimulationCenter.Y / ChunkPixels);
+
+        UpdateChunks(chunkX, chunkY, SimulationRadius);
+        UpdateCamera();
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -58,15 +49,16 @@ public class World(GameCore game)
         );
 
         // draw chunks
-        var chunks = LoadedChunks;
-        foreach (var (pos, chunk) in chunks)
+        foreach (var (pos, chunk) in LoadedChunks)
         {
             for (int x = 0; x < ChunkSize; x++)
             {
                 for (int y = 0; y < ChunkSize; y++)
                 {
-                    var tilePos = (pos * ChunkSize * Tile.TileSize)
-                        + (new Vector2(x, y) * Tile.TileSize);
+                    var tilePos = new Vector2(
+                        (pos.X * ChunkSize * TileSize) + (x * TileSize),
+                        (pos.Y * ChunkSize * TileSize) + (y * TileSize)
+                    );
 
                     if (chunk.Tiles[x, y].Type != TileType.Air)
                         _tileAtlas.GetRegion("TestTile").Draw(spriteBatch, tilePos, Color.White);
@@ -77,17 +69,32 @@ public class World(GameCore game)
         spriteBatch.End();
     }
 
-    private List<Vector2> GetChunkPositionsInRadius(int x, int y, int r)
+    private void UpdateChunks(int x, int y, int r)
     {
-        var res = new List<Vector2>();
-        for (int i = x - r ; i < x + r; i++)
+        foreach (var chunkPos in GetChunkPositionsInRadius(x, y, r))
+        {
+            if (LoadedChunks.TryGetValue(chunkPos, out var chunk))
+            {
+                // update chunk
+            }
+            else
+            {
+                LoadedChunks.Add(chunkPos, ChunkGenerator.GenerateChunk(chunkPos.X, chunkPos.Y));
+            }
+        }
+    }
+
+    private List<ChunkAdress> GetChunkPositionsInRadius(int x, int y, int r)
+    {
+        var res = new List<ChunkAdress>();
+        for (int i = x - r ; i <= x + r; i++)
         {
             var rowDiff = i - x;
             var columnRange = Math.Sqrt((r*r) - (rowDiff*rowDiff));
 
-            for (int j = (int)Math.Ceiling(y - columnRange);j < (int)Math.Floor(y + columnRange); j++)
+            for (int j = (int)Math.Ceiling(y - columnRange);j <= (int)Math.Floor(y + columnRange); j++)
             {
-                res.Add(new Vector2(i, j));
+                res.Add(new ChunkAdress(i, j));
             }
         }
         return res;
@@ -103,6 +110,9 @@ public class World(GameCore game)
 
         if (Game.ActionManager.IsActionPressed("zoom_out"))
             Camera.Zoom -= 0.03f;
+
+        if (Game.ActionManager.IsActionPressed("restore_camera"))
+            Camera.Zoom = 1.0f;
 
         Camera.Zoom = Math.Max(0.1f, Camera.Zoom);
     }

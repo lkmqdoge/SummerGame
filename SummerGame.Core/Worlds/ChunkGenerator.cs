@@ -3,8 +3,9 @@ using System;
 namespace SummerGame.Core.Worlds;
 
 public class ChunkGenerator
+    : IChunkGenerator
 {
-    public int Seed;
+    public int Seed { get; set; }
 
     public FastNoiseLite Noise = new ();
 
@@ -16,7 +17,7 @@ public class ChunkGenerator
         Noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
     }
 
-    public Chunk Generate(int x, int y)
+    public Chunk GenerateChunk(int x, int y)
     {
         const int chunkSize = World.ChunkSize;
         var tiles = new Tile[chunkSize, chunkSize];

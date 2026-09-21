@@ -8,12 +8,19 @@ public class DebugPanel(GameCore game)
     : GameObject(game)
 {
     public bool Visible { get; set; } = true;
+
+    private SpriteFont _font;
     private readonly string _format = """
         FPS:       {0}
         DrawCalls: {1}
         """;
 
-    public void Draw(GameTime gameTime)
+    public override void LoadContent()
+    {
+        _font = Content.Load<SpriteFont>("Fonts/NotJamMonoClean16");
+    }
+
+    public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
         if (!Visible)
         {
@@ -21,10 +28,12 @@ public class DebugPanel(GameCore game)
         }
 
         var fps = Math.Floor(1.0f / (float)gameTime.ElapsedGameTime.TotalSeconds);
-        var drawCalls = game.GraphicsDevice.Metrics.DrawCount;
+        var drawCalls = Game.GraphicsDevice.Metrics.DrawCount;
 
         // ui step
-        spriteBatch.DrawString(font, string.Format(_format, fps, drawCalls), new (10, 10), Color.White);
+        spriteBatch.Begin();
+        spriteBatch.DrawString(_font, string.Format(_format, fps, drawCalls), new (10, 10), Color.White);
+        spriteBatch.End();
     }
 }
 
