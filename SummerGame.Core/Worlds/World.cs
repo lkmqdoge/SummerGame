@@ -11,9 +11,10 @@ public class World(GameCore game)
     : GameObject(game)
 {
     public const int TileSize = 16;
-    public const int ChunkSize = 4;
+    public const int ChunkSize = 8;
 
-    public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
+    // public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
+    public IChunkGenerator ChunkGenerator { get; } = new FillGenerator();
     public ChunkLoader ChunkLoader { get; set; }
     public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
     public int SimulationRadius { get; set; } = 8;
@@ -45,14 +46,22 @@ public class World(GameCore game)
     {
         spriteBatch.Begin(
             samplerState: SamplerState.PointClamp,
-            transformMatrix: Camera.GetViewMatrix(Game.GraphicsDevice.Viewport)
+            transformMatrix: Camera.Transform
         );
 
-        var bound = Camera.GetBoundaries(Game.GraphicsDevice.Viewport);
+        var bound = Camera.VisibleArea;
 
         // draw chunks
         foreach (var (pos, chunk) in LoadedChunks)
         {
+            var chunkWorldPos = new Vector2(
+                (pos.X * ChunkSize * TileSize) + (ChunkSize*TileSize / 2),
+                (pos.Y * ChunkSize * TileSize) + (ChunkSize*TileSize / 2)
+            );
+
+            if (!bound.Contains(chunkWorldPos))
+                continue;
+
             for (int x = 0; x < ChunkSize; x++)
             {
                 for (int y = 0; y < ChunkSize; y++)
@@ -62,10 +71,7 @@ public class World(GameCore game)
                         (pos.Y * ChunkSize * TileSize) + (y * TileSize)
                     );
 
-                    if (!bound.Contains(tilePos))
-                        continue;
-
-                    if (chunk.Tiles[x, y].Type != TileType.Air)
+                    if (bound.Contains(tilePos) && chunk.Tiles[x, y].Type != TileType.Air)
                         _tileAtlas.GetRegion("TestTile").Draw(spriteBatch, tilePos, Color.White);
                 }
             }
@@ -120,6 +126,7 @@ public class World(GameCore game)
             Camera.Zoom = 1.0f;
 
         Camera.Zoom = Math.Max(0.1f, Camera.Zoom);
+        Camera.UpdateCamera(Game.GraphicsDevice.Viewport);
     }
 }
 

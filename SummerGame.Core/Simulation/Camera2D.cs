@@ -1,46 +1,42 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SummerGame.Core.Simulation;
 
-public class Camera2D
+public class Camera2D()
 {
-    public float Zoom { get; set; } = 1;
-
-    public Vector2 Position { get; set; }
-
+    public float Zoom { get; set; } = 1f;
     public float Rotation { get; set; }
+    public Vector2 Position { get; set; } = Vector2.Zero;
+    public Matrix Transform { get; private set; } = Matrix.Identity;
+    public Matrix InverseTransform { get; private set; } = Matrix.Identity;
+    public Rectangle VisibleArea { get; private set; }
 
-    public Matrix Transform { get; private set ;} = Matrix.Identity;
-
-    public Matrix GetViewMatrix(Viewport viewport)
+    public void UpdateCamera(Viewport viewport)
     {
         Transform = Matrix.CreateTranslation(new Vector3(-Position, 0)) *
             Matrix.CreateRotationZ(Rotation) *
-            Matrix.CreateScale(new Vector3(Zoom, Zoom, 0)) *
-            Matrix.CreateTranslation(viewport.Width * 0.5f, viewport.Height * 0.5f, 0);
-        return Transform;
+            Matrix.CreateScale(Zoom) *
+            Matrix.CreateTranslation(new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0));
+
+        InverseTransform = Matrix.Invert(Transform);
+        VisibleArea = UpdateVisibleArea(viewport);
     }
 
-    public Rectangle GetBoundaries(Viewport viewport)
+    private Rectangle UpdateVisibleArea(Viewport viewport)
     {
-        var inverseTransform =  Matrix.Invert(Transform);
-        var cameraTopLeft = Position - new Vector2(viewport.Width / 2f, viewport.Height / 2f);
-        var cameraBottomRight = Position + new Vector2(viewport.Width / 2f, viewport.Height / 2f);
+        var x = Position.X - (viewport.Width  / 2f / Zoom);
+        var y = Position.Y - (viewport.Height / 2f / Zoom);
+        var width = viewport.Width / Zoom;
+        var height = viewport.Height / Zoom;
 
-        var cameraTopLeftWorld = Vector2.Transform(cameraTopLeft, inverseTransform);
-        var cameraBottomRightWorld = Vector2.Transform(cameraBottomRight, inverseTransform);
-
-        var width = cameraBottomRightWorld.X - cameraTopLeftWorld.X;
-        var height = cameraBottomRightWorld.Y - cameraTopLeftWorld.Y;
-
-        var bounds = new Rectangle(
-            (int)cameraTopLeftWorld.X,
-            (int)cameraTopLeftWorld.Y,
+        return new Rectangle(
+            (int)x,
+            (int)y,
             (int)width,
             (int)height
         );
-        return bounds;
     }
 }
 
