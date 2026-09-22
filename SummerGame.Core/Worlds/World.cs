@@ -49,14 +49,21 @@ public class World(GameCore game)
             transformMatrix: Camera.Transform
         );
 
+        // adjust every rect side to size of chunk
         var bound = Camera.VisibleArea;
+        const int worldChunkSize = ChunkSize*TileSize;
+
+        bound.X      -= worldChunkSize*2;
+        bound.Y      -= worldChunkSize*2;
+        bound.Width  += worldChunkSize*4;
+        bound.Height += worldChunkSize*4;
 
         // draw chunks
         foreach (var (pos, chunk) in LoadedChunks)
         {
             var chunkWorldPos = new Vector2(
-                (pos.X * ChunkSize * TileSize) + (ChunkSize*TileSize / 2),
-                (pos.Y * ChunkSize * TileSize) + (ChunkSize*TileSize / 2)
+                (pos.X * worldChunkSize) + (worldChunkSize / 2),
+                (pos.Y * worldChunkSize) + (worldChunkSize / 2)
             );
 
             if (!bound.Contains(chunkWorldPos))
@@ -67,8 +74,8 @@ public class World(GameCore game)
                 for (int y = 0; y < ChunkSize; y++)
                 {
                     var tilePos = new Vector2(
-                        (pos.X * ChunkSize * TileSize) + (x * TileSize),
-                        (pos.Y * ChunkSize * TileSize) + (y * TileSize)
+                        (pos.X * worldChunkSize) + (x * TileSize),
+                        (pos.Y * worldChunkSize) + (y * TileSize)
                     );
 
                     if (bound.Contains(tilePos) && chunk.Tiles[x, y].Type != TileType.Air)
