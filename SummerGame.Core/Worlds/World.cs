@@ -13,8 +13,8 @@ public class World(GameCore game)
     public const int TileSize = 16;
     public const int ChunkSize = 8;
 
-    // public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
-    public IChunkGenerator ChunkGenerator { get; } = new FillGenerator();
+    public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
+    // public IChunkGenerator ChunkGenerator { get; } = new FillGenerator();
     public ChunkLoader ChunkLoader { get; set; }
     public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
     public int SimulationRadius { get; set; } = 8;
@@ -26,7 +26,7 @@ public class World(GameCore game)
     public override void LoadContent()
     {
         _tileAtlas.Texture = Content.Load<Texture2D>("Textures/tiles");
-        _tileAtlas.AddRegion("TestTile", 0, 0, 16, 16);
+        _tileAtlas.AddRegion("TestTile", 16*2, 0, 16, 16);
     }
 
     public override void Update(double delta)
@@ -61,12 +61,12 @@ public class World(GameCore game)
         // draw chunks
         foreach (var (pos, chunk) in LoadedChunks)
         {
-            var chunkWorldPos = new Vector2(
+            var chunkCenter = new Vector2(
                 (pos.X * worldChunkSize) + (worldChunkSize / 2),
                 (pos.Y * worldChunkSize) + (worldChunkSize / 2)
             );
 
-            if (!bound.Contains(chunkWorldPos))
+            if (!bound.Contains(chunkCenter))
                 continue;
 
             for (int x = 0; x < ChunkSize; x++)

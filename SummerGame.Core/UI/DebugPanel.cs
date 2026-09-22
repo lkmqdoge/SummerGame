@@ -27,7 +27,7 @@ public class DebugPanel(GameCore game)
             return;
         }
 
-        var fps = Math.Floor(1.0f / (float)gameTime.ElapsedGameTime.TotalSeconds);
+        var fps = Math.Ceiling(1.0f / (float)gameTime.ElapsedGameTime.TotalSeconds);
         var drawCalls = Game.GraphicsDevice.Metrics.DrawCount;
 
         // ui step

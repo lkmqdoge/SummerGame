@@ -23,7 +23,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.6" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SummerGame.Core\SummerGame.Core.csproj" />
