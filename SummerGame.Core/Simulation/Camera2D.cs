@@ -24,6 +24,11 @@ public class Camera2D()
         VisibleArea = UpdateVisibleArea(viewport);
     }
 
+    public Vector2 TranslateScreenToWorld(Vector2 screenPos)
+    {
+        return Vector2.Transform(screenPos, InverseTransform);
+    }
+
     private Rectangle UpdateVisibleArea(Viewport viewport)
     {
         var x = Position.X - (viewport.Width  / 2f / Zoom);

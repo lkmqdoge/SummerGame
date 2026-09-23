@@ -4,6 +4,7 @@ using SummerGame.Core.Simulation;
 using System.Collections.Generic;
 using System;
 using SummerGame.Core.Graphics;
+using SummerGame.Core.Entities;
 
 namespace SummerGame.Core.Worlds;
 
@@ -20,23 +21,42 @@ public class World(GameCore game)
     public int SimulationRadius { get; set; } = 8;
     public Vector2 SimulationCenter { get; set; } = Vector2.Zero;
     public Camera2D Camera { get; set; } = new ();
+    public Player Player { get; set; }
 
+    private Vector2 CursorSelect = Vector2.Zero;
     private readonly TextureAtlas _tileAtlas = new ();
+    private readonly Sprite2D _cursorSprite = new ();
+
+    public override void Initialize()
+    {
+        Player = new (Game);
+        Player.Initialize();
+    }
 
     public override void LoadContent()
     {
         _tileAtlas.Texture = Content.Load<Texture2D>("Textures/tiles");
         _tileAtlas.AddRegion("TestTile", 16*2, 0, 16, 16);
+
+        _cursorSprite.Texture = Content.Load<Texture2D>("Textures/selection");
+        Player.LoadContent();
     }
 
     public override void Update(double delta)
     {
-        _ = delta;
-
         SimulationCenter = Camera.Position;
         const int ChunkPixels = ChunkSize * TileSize;
         var chunkX = (int)MathF.Floor(SimulationCenter.X / ChunkPixels);
         var chunkY = (int)MathF.Floor(SimulationCenter.Y / ChunkPixels);
+
+        var mousePos = Game.ActionManager.MouseInfo.Position;
+        CursorSelect = Camera.TranslateScreenToWorld(new Vector2(mousePos.X, mousePos.Y));
+        _cursorSprite.Position = new Vector2(
+            CursorSelect.X - (CursorSelect.X % TileSize),
+            CursorSelect.Y - (CursorSelect.Y % TileSize)
+        );
+
+        Player.Update(delta);
 
         UpdateChunks(chunkX, chunkY, SimulationRadius);
         UpdateCamera();
@@ -83,6 +103,11 @@ public class World(GameCore game)
                 }
             }
         }
+
+        Player.Draw(spriteBatch);
+
+        // draw cursor
+        _cursorSprite.Draw(spriteBatch);
 
         spriteBatch.End();
     }

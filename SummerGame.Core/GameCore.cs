@@ -29,6 +29,11 @@ public class GameCore : Game
             new InputAction("up", [Keys.Up]),
             new InputAction("down", [Keys.Down]),
 
+            new InputAction("move_left", [Keys.A]),
+            new InputAction("move_right", [Keys.D]),
+            new InputAction("move_up", [Keys.W]),
+            new InputAction("move_down", [Keys.S]),
+
             new InputAction("zoom_in",  [Keys.OemPlus]),
             new InputAction("zoom_out", [Keys.OemMinus]),
             new InputAction("restore_camera", [Keys.R])
