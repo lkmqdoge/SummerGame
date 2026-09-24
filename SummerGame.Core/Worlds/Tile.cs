@@ -12,5 +12,6 @@ public struct Tile
 public enum TileType
 {
     Air,
-    Stone
+    Stone,
+    NotGenerated
 }

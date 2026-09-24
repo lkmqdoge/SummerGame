@@ -11,6 +11,7 @@ public class Player(GameCore game)
     public Vector2 Position { get; set; } = Vector2.Zero;
     public bool Visible { get; set; } = true;
     public float Speed { get; set; } = 100f;
+    public float SprintSpeed { get; set; } = 2000f;
 
     private readonly Sprite2D _sprite = new ();
 
@@ -24,7 +25,8 @@ public class Player(GameCore game)
         var am = Game.ActionManager;
         var dir = am.GetVector("move_left", "move_right", "move_up", "move_down");
 
-        Position += dir * Speed * (float)delta;
+        var speed = am.IsActionPressed("sprint") ? SprintSpeed : Speed;
+        Position += dir * speed * (float)delta;
         _sprite.Position = Position;
     }
 

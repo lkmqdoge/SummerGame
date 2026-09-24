@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SummerGame.Core.Graphics;
 using SummerGame.Core.Input;
-using SummerGame.Core.Simulation;
 using SummerGame.Core.UI;
 using SummerGame.Core.Worlds;
 
@@ -22,6 +20,7 @@ public class GameCore : Game
     public GameCore()
     {
         _graphicsDevice = new (this);
+        Window.AllowUserResizing = true;
 
         ActionManager.AddAction([
             new InputAction("left", [Keys.Left]),
@@ -33,6 +32,7 @@ public class GameCore : Game
             new InputAction("move_right", [Keys.D]),
             new InputAction("move_up", [Keys.W]),
             new InputAction("move_down", [Keys.S]),
+            new InputAction("sprint", [Keys.LeftShift]),
 
             new InputAction("zoom_in",  [Keys.OemPlus]),
             new InputAction("zoom_out", [Keys.OemMinus]),
