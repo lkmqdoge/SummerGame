@@ -14,16 +14,17 @@ public class World(GameCore game)
     public const int TileSize = 16;
     public const int ChunkSize = 8;
 
-    public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
-    // public IChunkGenerator ChunkGenerator { get; } = new FillGenerator();
-    public ChunkLoader ChunkLoader { get; set; }
-    public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
     public int SimulationRadius { get; set; } = 8;
     public Vector2 SimulationCenter { get; set; } = Vector2.Zero;
+    public bool GenerationEnabled { get; set; } = true;
+    public IChunkGenerator ChunkGenerator { get; } = new ChunkGenerator();
+    public ChunkLoader ChunkLoader { get; set; }
+    public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
+
     public Camera2D Camera { get; set; } = new ();
     public Player Player { get; set; }
 
-    private Vector2 CursorSelect = Vector2.Zero;
+    private Vector2 _cursorSelect = Vector2.Zero;
     private readonly TextureAtlas _tileAtlas = new ();
     private readonly Sprite2D _cursorSprite = new ();
 
@@ -67,15 +68,17 @@ public class World(GameCore game)
         var chunkY = (int)MathF.Floor(SimulationCenter.Y / ChunkPixels);
 
         var mousePos = Game.ActionManager.MouseInfo.Position;
-        CursorSelect = Camera.TranslateScreenToWorld(new Vector2(mousePos.X, mousePos.Y));
+        _cursorSelect = Camera.TranslateScreenToWorld(new Vector2(mousePos.X, mousePos.Y));
 
         _cursorSprite.Position = new Vector2(
-            (float)Math.Floor(CursorSelect.X / TileSize) * TileSize,
-            (float)Math.Floor(CursorSelect.Y / TileSize) * TileSize
+            (float)Math.Floor(_cursorSelect.X / TileSize) * TileSize,
+            (float)Math.Floor(_cursorSelect.Y / TileSize) * TileSize
         );
 
         Player.Update(delta);
-        UpdateChunks(chunkX, chunkY, SimulationRadius);
+
+        if (GenerationEnabled)
+            UpdateChunks(chunkX, chunkY, SimulationRadius);
     }
 
     public void Draw(SpriteBatch spriteBatch)
