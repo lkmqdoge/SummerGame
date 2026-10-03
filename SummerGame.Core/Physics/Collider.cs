@@ -1,15 +1,16 @@
+using System;
+
 namespace SummerGame.Core.Physics;
 
-public class Collider(IShape shape)
+public class Collider
 {
-    public IShape Shape = shape;
+    // TODO: implement other shapes
+    // public IShape Shape = shape;
+
+    public RectangleShape Shape { get; init; }
+
     public uint CollisionMask { get; } = 1;
     public uint CollisionLayer { get; } = 1;
-
-    public bool CheckCollision(Collider other)
-    {
-
-    }
 }
 
 

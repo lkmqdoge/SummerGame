@@ -5,11 +5,9 @@ using SummerGame.Core.Graphics;
 namespace SummerGame.Core.Entities;
 
 public class Player(GameCore game)
-    : Entity(game),
-    Graphics.IDrawable
+    : Entity(game)
 {
     public Vector2 Position { get; set; } = Vector2.Zero;
-    public bool Visible { get; set; } = true;
     public float Speed { get; set; } = 100f;
     public float SprintSpeed { get; set; } = 2000f;
 
@@ -30,9 +28,11 @@ public class Player(GameCore game)
         _sprite.Position = Position;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _sprite.Draw(spriteBatch);
+        // _sprite.Draw(spriteBatch);
+        spriteBatch.DrawRect(new Rectangle((Position - new Vector2(8, 8)).ToPoint(),
+            new Vector2(16, 16).ToPoint()), new Color(1.0f, 0.0f, 0.0f, 0.3f));
     }
 }
 

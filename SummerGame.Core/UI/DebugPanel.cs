@@ -7,8 +7,6 @@ namespace SummerGame.Core.UI;
 public class DebugPanel(GameCore game)
     : GameObject(game)
 {
-    public bool Visible { get; set; } = true;
-
     private SpriteFont _font;
     private readonly string _format = """
         FPS:       {0}

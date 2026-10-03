@@ -14,6 +14,8 @@ public static class PrimitivesHelper
         _pixel.SetData([Color.White]);
     }
 
+#region line
+
     public static void DrawLine(this SpriteBatch spriteBatch, Vector2 p1, Vector2 p2, Color color)
     {
         DrawLine(spriteBatch, p1, p2, color, 1.0f);
@@ -45,6 +47,21 @@ public static class PrimitivesHelper
                 0
             );
 		}
+
+#endregion
+
+#region rect
+
+    public static void DrawRect(this SpriteBatch spriteBatch, Rectangle rect, Color color)
+    {
+        if (_pixel == null)
+        {
+            CreatePixel(spriteBatch.GraphicsDevice);
+        }
+        spriteBatch.Draw(_pixel, rect, color);
+    }
+
+#endregion 
 }
 
 

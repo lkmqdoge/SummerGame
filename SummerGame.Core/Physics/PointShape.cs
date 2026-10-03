@@ -7,7 +7,7 @@ public readonly struct PointShape
     : IShape
 {
     public readonly IShape.ShapeType Type => IShape.ShapeType.Rectangle;
-    public readonly Vector2 Point { get; }
+    public readonly Vector2 Position { get; }
 }
 
 

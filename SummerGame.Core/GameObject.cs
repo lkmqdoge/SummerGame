@@ -1,14 +1,18 @@
 using System;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using SummerGame.Core.Graphics;
 
 namespace SummerGame.Core;
 
 public abstract class GameObject :
-    IGameObject, IDisposable
+    IGameObject, IDisposable, IDrawable
 {
+    public GameCore Game { get; init; }
     public bool IsDisposed { get; private set; }
 
-    public GameCore Game { get; init; }
+    public bool Visible { get; set; } = true;
+
     protected ContentManager Content;
 
     protected GameObject(GameCore game)
@@ -24,6 +28,7 @@ public abstract class GameObject :
     public virtual void Initialize() { }
     public virtual void LoadContent() { }
     public virtual void Update(double delta) { }
+    public virtual void Draw(SpriteBatch spriteBatch) { }
 
     public virtual void Exit()
     {

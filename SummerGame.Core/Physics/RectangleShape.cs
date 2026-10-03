@@ -6,7 +6,7 @@ public readonly struct RectangleShape
     : IShape
 {
     public readonly IShape.ShapeType Type => IShape.ShapeType.Rectangle;
-    public readonly Rectangle Rect { get; }
+    public readonly Rectangle Rect { get; init; }
 }
 
 

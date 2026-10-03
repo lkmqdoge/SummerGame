@@ -11,11 +11,10 @@ public class GameCore : Game
 {
     public ActionManager ActionManager { get; } = new ();
 
-    private GraphicsDeviceManager _graphicsDevice;
+    private readonly GraphicsDeviceManager _graphicsDevice;
     private SpriteBatch _spriteBatch;
-    private DebugPanel _debugPanel;
-
-    private World _world;
+    private readonly DebugPanel _debugPanel;
+    private readonly GameObject _rootGameObject;
 
     public GameCore()
     {
@@ -43,13 +42,13 @@ public class GameCore : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        _world = new (this);
+        _rootGameObject = new World(this);
         _debugPanel = new (this);
     }
 
     protected override void Initialize()
     {
-        _world.Initialize();
+        _rootGameObject.Initialize();
         _debugPanel.Initialize();
         base.Initialize();
     }
@@ -57,7 +56,7 @@ public class GameCore : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _world.LoadContent();
+        _rootGameObject.LoadContent();
         _debugPanel.LoadContent();
 
         base.LoadContent();
@@ -68,7 +67,7 @@ public class GameCore : Game
         var delta = gameTime.ElapsedGameTime.TotalSeconds;
 
         ActionManager.Update();
-        _world.Update(delta);
+        _rootGameObject.Update(delta);
         _debugPanel.Update(delta);
 
         base.Update(gameTime);
@@ -78,7 +77,7 @@ public class GameCore : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _world.Draw(_spriteBatch);
+        _rootGameObject.Draw(_spriteBatch);
         _debugPanel.Draw(_spriteBatch, gameTime);
 
         base.Draw(gameTime);

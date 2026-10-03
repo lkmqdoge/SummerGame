@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using SummerGame.Core.Graphics;
 using SummerGame.Core.Entities;
+using SummerGame.Core.Physics;
 
 namespace SummerGame.Core.Worlds;
 
@@ -21,6 +22,8 @@ public class World(GameCore game)
     public ChunkLoader ChunkLoader { get; set; }
     public Dictionary<ChunkAdress, Chunk> LoadedChunks { get; set; } = [];
 
+    public GamePhysics Physics { get; private set; }
+
     public Camera2D Camera { get; set; } = new ();
     public Player Player { get; set; }
 
@@ -35,6 +38,11 @@ public class World(GameCore game)
             Speed = 300f
         };
         Player.Initialize();
+
+        Physics = new(Game);
+        Physics.Initialize();
+
+        base.Initialize();
     }
 
     public override void LoadContent()
@@ -48,6 +56,9 @@ public class World(GameCore game)
 
     public override void Update(double delta)
     {
+        Player.Update(delta);
+        Physics.Update(delta);
+
         // --- Update camera
         // var dir = Game.ActionManager.GetVector("left", "right", "up", "down");
         // Camera.Position += dir * (1.0f / Camera.Zoom) * 10;
@@ -63,10 +74,15 @@ public class World(GameCore game)
         Camera.UpdateCamera(Game.GraphicsDevice.Viewport);
         SimulationCenter = Camera.Position;
 
+        // -- chunks
         const int ChunkPixels = ChunkSize * TileSize;
         var chunkX = (int)MathF.Floor(SimulationCenter.X / ChunkPixels);
         var chunkY = (int)MathF.Floor(SimulationCenter.Y / ChunkPixels);
 
+        if (GenerationEnabled)
+            UpdateChunks(chunkX, chunkY, SimulationRadius);
+
+        // -- cursor
         var mousePos = Game.ActionManager.MouseInfo.Position;
         _cursorSelect = Camera.TranslateScreenToWorld(new Vector2(mousePos.X, mousePos.Y));
 
@@ -74,20 +90,10 @@ public class World(GameCore game)
             (float)Math.Floor(_cursorSelect.X / TileSize) * TileSize,
             (float)Math.Floor(_cursorSelect.Y / TileSize) * TileSize
         );
-
-        Player.Update(delta);
-
-        if (GenerationEnabled)
-            UpdateChunks(chunkX, chunkY, SimulationRadius);
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Begin(
-            samplerState: SamplerState.PointClamp,
-            transformMatrix: Camera.Transform
-        );
-
         // adjust every rect side to size of chunk
         var bound = Camera.VisibleArea;
         const int worldChunkSize = ChunkSize*TileSize;
@@ -96,6 +102,11 @@ public class World(GameCore game)
         bound.Y -= worldChunkSize*2;
         bound.Width += worldChunkSize*4;
         bound.Height += worldChunkSize*4;
+
+        spriteBatch.Begin(
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: Camera.Transform
+        );
 
         // draw chunks
         foreach (var (chunkPos, chunk) in LoadedChunks)
@@ -130,6 +141,7 @@ public class World(GameCore game)
         }
 
         Player.Draw(spriteBatch);
+        Physics.Draw(spriteBatch);
 
         // draw cursor
         _cursorSprite.Draw(spriteBatch);
